@@ -28,6 +28,12 @@ module Tenacity
           foreign_key = association.foreign_key(self.class)
           associate_id = self.class._t_serialize_ids(self.id, association)
           ids = association.associate_class._t_find_all_ids_by_associate(foreign_key, associate_id)
+          # TODO Julie - this is way to slow, need a better solution -- problem is the bug is in multiple database types
+          # If there's a polymorphic association, then we need to ensure the results are
+          if ids && association.polymorphic?
+            type_ids = association.associate_class._t_find_all_ids_by_associate(association.polymorphic_type, self.class.name)
+            ids = ids & type_ids
+          end
           self.class._t_serialize_ids(ids, association)
         end
       end
