@@ -25,7 +25,7 @@ module Tenacity
         if self.id.nil?
           []
         else
-          primary_key = self.class.respond_to?(:primary_key) ? self.class.primary_key : :id
+          primary_key = self.class.respond_to?(:primary_key) ? self.class.primary_key.to_sym : :id
           foreign_key = association.foreign_key(self.class)
           associate_id = self.class._t_serialize_ids(self.id, association)
           if association.polymorphic?
